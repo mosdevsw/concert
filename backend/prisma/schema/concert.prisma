@@ -1,0 +1,8 @@
+model Concert {
+  id           String        @id @default(uuid())
+  name         String
+  description  String
+  totalSeats   Int
+  createdAt    DateTime      @default(now())
+  reservations Reservation[]
+}

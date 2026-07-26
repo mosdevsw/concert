@@ -8,11 +8,6 @@ dist/
 *.tsbuildinfo
 next-env.d.ts
 
-# Environment / secrets
-.env
-.env.local
-.env.*.local
-
 # Testing
 coverage/
 
