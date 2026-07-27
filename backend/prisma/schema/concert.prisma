@@ -5,4 +5,5 @@ model Concert {
   totalSeats   Int
   createdAt    DateTime      @default(now())
   reservations Reservation[]
+  activities   ReservationActivity[]
 }

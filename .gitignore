@@ -5,8 +5,14 @@ package-lock.json
 # Build outputs
 dist/
 .next/
+out/
+build/
 *.tsbuildinfo
 next-env.d.ts
+
+# Prisma generated client (regenerated via `prisma generate`)
+**/generated/prisma
+.prisma/
 
 # Testing
 coverage/

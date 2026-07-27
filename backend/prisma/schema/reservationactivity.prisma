@@ -1,0 +1,17 @@
+enum ReservationAction {
+  RESERVE
+  CANCEL
+}
+
+model ReservationActivity {
+  id        String            @id @default(uuid())
+  userId    String
+  concertId String
+  action    ReservationAction
+  createdAt DateTime          @default(now())
+  user      User              @relation(fields: [userId], references: [id])
+  concert   Concert           @relation(fields: [concertId], references: [id])
+
+  @@index([concertId])
+  @@index([userId])
+}
