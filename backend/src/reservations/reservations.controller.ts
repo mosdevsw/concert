@@ -18,7 +18,7 @@ export class ReservationsController {
   constructor(private readonly reservationsService: ReservationsService) {}
 
   @Get('me')
-  @Roles('USER')
+  @Roles('USER', 'ADMIN')
   getMyReservations(@Req() req) {
     return this.reservationsService.getMyReservations(req.user.sub)
   }
@@ -36,13 +36,13 @@ export class ReservationsController {
   }
 
   @Post(':concertId')
-  @Roles('USER')
+  @Roles('USER', 'ADMIN')
   reserve(@Req() req, @Param('concertId') concertId: string) {
     return this.reservationsService.reserve(req.user.sub, concertId)
   }
 
   @Delete(':concertId')
-  @Roles('USER')
+  @Roles('USER', 'ADMIN')
   cancel(@Req() req, @Param('concertId') concertId: string) {
     return this.reservationsService.cancel(req.user.sub, concertId)
   }
