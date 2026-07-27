@@ -17,5 +17,34 @@ services:
       timeout: 5s
       retries: 5
 
+  backend:
+    build: ./backend
+    container_name: concert_backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-concert}:${POSTGRES_PASSWORD:-concert_pass}@db:5432/${POSTGRES_DB:-concert}?schema=public
+      JWT_SECRET: ${JWT_SECRET:-40463731c08308d928e780e107d26486e966ea76b55fc196529bdea9c5d46113461cc824378ea7f74d53b5c275ff8f8a9483c833804ed90f201c376fc891801e}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-1d}
+      BACKEND_PORT: 3001
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@concert.com}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin1234}
+    ports:
+      - "3001:3001"
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:3001
+    container_name: concert_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+
 volumes:
   db_data:
