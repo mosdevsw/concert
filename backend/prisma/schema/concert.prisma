@@ -4,6 +4,7 @@ model Concert {
   description  String
   totalSeats   Int
   createdAt    DateTime      @default(now())
+  deletedAt    DateTime?
   reservations Reservation[]
   activities   ReservationActivity[]
 }

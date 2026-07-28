@@ -8,6 +8,7 @@ export class ConcertsService {
 
   async findAll() {
     const concerts = await this.prisma.concert.findMany({
+      where: { deletedAt: null },
       include: {
         _count: { select: { reservations: { where: { status: 'RESERVED' } } } },
       },
@@ -30,15 +31,26 @@ export class ConcertsService {
 
   async remove(id: string) {
     const concert = await this.prisma.concert.findUnique({ where: { id } })
-    if (!concert) throw new NotFoundException('Concert not found')
-    return this.prisma.concert.delete({ where: { id } })
+    if (!concert || concert.deletedAt)
+      throw new NotFoundException('Concert not found')
+    return this.prisma.concert.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    })
   }
 
   async getStats() {
     const [totalSeats, reserveCount, cancelCount] = await Promise.all([
-      this.prisma.concert.aggregate({ _sum: { totalSeats: true } }),
-      this.prisma.reservation.count({ where: { status: 'RESERVED' } }),
-      this.prisma.reservation.count({ where: { status: 'CANCELLED' } }),
+      this.prisma.concert.aggregate({
+        where: { deletedAt: null },
+        _sum: { totalSeats: true },
+      }),
+      this.prisma.reservation.count({
+        where: { status: 'RESERVED', concert: { deletedAt: null } },
+      }),
+      this.prisma.reservation.count({
+        where: { status: 'CANCELLED', concert: { deletedAt: null } },
+      }),
     ])
 
     return {

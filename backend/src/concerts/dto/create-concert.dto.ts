@@ -1,4 +1,4 @@
-import { IsInt, IsNotEmpty, IsString, Min } from 'class-validator'
+import { IsInt, IsNotEmpty, IsString, Max, Min } from 'class-validator'
 
 export class CreateConcertDto {
   @IsString()
@@ -11,5 +11,6 @@ export class CreateConcertDto {
 
   @IsInt()
   @Min(1)
+  @Max(500)
   totalSeats: number
 }

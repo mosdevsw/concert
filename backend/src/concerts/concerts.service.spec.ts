@@ -10,7 +10,7 @@ describe('ConcertsService', () => {
       findMany: jest.fn(),
       create: jest.fn(),
       findUnique: jest.fn(),
-      delete: jest.fn(),
+      update: jest.fn(),
       aggregate: jest.fn(),
     },
     reservation: { count: jest.fn() },
@@ -59,20 +59,37 @@ describe('ConcertsService', () => {
   })
 
   describe('remove', () => {
-    it('deletes when concert exists', async () => {
-      prisma.concert.findUnique.mockResolvedValue({ id: 'c1' })
-      prisma.concert.delete.mockResolvedValue({ id: 'c1' })
+    it('soft-deletes by setting deletedAt when concert exists', async () => {
+      prisma.concert.findUnique.mockResolvedValue({ id: 'c1', deletedAt: null })
+      prisma.concert.update.mockResolvedValue({ id: 'c1' })
 
       await service.remove('c1')
 
-      expect(prisma.concert.delete).toHaveBeenCalledWith({ where: { id: 'c1' } })
+      expect(prisma.concert.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id: 'c1' },
+          data: expect.objectContaining({ deletedAt: expect.any(Date) }),
+        }),
+      )
     })
 
     it('throws NotFound when concert missing', async () => {
       prisma.concert.findUnique.mockResolvedValue(null)
 
       await expect(service.remove('x')).rejects.toBeInstanceOf(NotFoundException)
-      expect(prisma.concert.delete).not.toHaveBeenCalled()
+      expect(prisma.concert.update).not.toHaveBeenCalled()
+    })
+
+    it('throws NotFound when concert already deleted', async () => {
+      prisma.concert.findUnique.mockResolvedValue({
+        id: 'c1',
+        deletedAt: new Date(),
+      })
+
+      await expect(service.remove('c1')).rejects.toBeInstanceOf(
+        NotFoundException,
+      )
+      expect(prisma.concert.update).not.toHaveBeenCalled()
     })
   })
 

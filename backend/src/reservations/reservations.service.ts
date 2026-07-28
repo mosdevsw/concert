@@ -17,7 +17,8 @@ export class ReservationsService {
         _count: { select: { reservations: { where: { status: 'RESERVED' } } } },
       },
     })
-    if (!concert) throw new NotFoundException('Concert not found')
+    if (!concert || concert.deletedAt)
+      throw new NotFoundException('Concert not found')
 
     const available = concert.totalSeats - concert._count.reservations
     if (available <= 0) throw new BadRequestException('Concert is fully booked')
