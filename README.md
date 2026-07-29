@@ -8,7 +8,7 @@
 ## 0. Live Demo
 
 เข้าไปลองเล่นได้เลย (ไม่ต้องติดตั้งอะไร): **https://concert.deployeffect.com**
-- ลอง Admin ได้ด้วยบัญชี: **admin@concert.com / admin1234**
+- ลอง Admin ได้ด้วยบัญชี: ** username = admin@concert.com / password = admin1234**
 - หรือสมัคร User ใหม่เองผ่านหน้า Register
 
 ---
@@ -78,6 +78,7 @@
 ### หมายเหตุพฤติกรรม (สำคัญ)
 - **แยก role เข้มงวด:** Admin **จองตั๋วไม่ได้** (การจองเป็นสิทธิ์ของ USER เท่านั้นตาม spec)
 - **ปุ่ม Switch to Admin/User:** ต้อง login ใหม่เสมอ (ไม่สลับ view ตรงๆ) — ถ้า USER พยายามเข้า Admin จะถูกปฏิเสธ
+- **หน้า Admin Login ไม่มีปุ่ม Register:** ตั้งใจออกแบบให้ไม่มี เพื่อป้องกันความสับสนว่าคนทั่วไปสามารถสมัครบัญชี ADMIN เองได้ — บัญชี Admin ถูก seed ไว้ในระบบเท่านั้น
 
 ---
 

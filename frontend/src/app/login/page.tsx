@@ -82,15 +82,14 @@ function LoginForm() {
         {loading ? 'Signing in…' : asAdmin ? 'Login as Administrator' : 'Login'}
       </button>
 
-      <p className={styles.footer}>
-        Don&apos;t have an account?{' '}
-        <Link
-          href={asAdmin ? '/register?as=admin' : '/register'}
-          className={styles.link}
-        >
-          Create an account
-        </Link>
-      </p>
+      {!asAdmin && (
+        <p className={styles.footer}>
+          Don&apos;t have an account?{' '}
+          <Link href="/register" className={styles.link}>
+            Create an account
+          </Link>
+        </p>
+      )}
     </form>
   )
 }
