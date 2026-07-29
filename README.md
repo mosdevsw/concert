@@ -8,7 +8,7 @@
 ## 0. Live Demo
 
 เข้าไปลองเล่นได้เลย (ไม่ต้องติดตั้งอะไร): **https://concert.deployeffect.com**
-- ลอง Admin ได้ด้วยบัญชี: ** username = admin@concert.com / password = admin1234**
+- ลอง Admin ได้ด้วยบัญชี: username = admin@concert.com / password = admin1234
 - หรือสมัคร User ใหม่เองผ่านหน้า Register
 
 ---
