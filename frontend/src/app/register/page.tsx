@@ -3,7 +3,10 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { AuthPanel } from '@/components/AuthPanel'
+import { PasswordInput } from '@/components/PasswordInput'
 import { useAuthStore } from '@/store/auth'
+import styles from './register.module.css'
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -12,16 +15,21 @@ export default function RegisterPage() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirm, setConfirm] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
+    if (password !== confirm) {
+      setError('Passwords do not match')
+      return
+    }
     setLoading(true)
     try {
       await register(name, email, password)
-      router.push('/')
+      router.replace('/user')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed')
     } finally {
@@ -30,70 +38,75 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="flex flex-1 items-center justify-center p-4">
-      <form
-        onSubmit={onSubmit}
-        className="w-full max-w-sm rounded-2xl border border-gray-200 bg-white p-8 shadow-sm"
-      >
-        <h1 className="mb-6 text-2xl font-semibold text-gray-900">
-          Create account
-        </h1>
+    <AuthPanel>
+      <form onSubmit={onSubmit} className={styles.form}>
+        <h1 className={styles.title}>Sign Up</h1>
 
-        {error && (
-          <p className="mb-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">
-            {error}
-          </p>
-        )}
+        {error && <p className="formError">{error}</p>}
 
-        <label className="mb-1 block text-sm font-medium text-gray-700">
-          Name
-        </label>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-          className="mb-4 w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 outline-none focus:border-gray-900"
-        />
-
-        <label className="mb-1 block text-sm font-medium text-gray-700">
-          Email
-        </label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          className="mb-4 w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 outline-none focus:border-gray-900"
-        />
-
-        <label className="mb-1 block text-sm font-medium text-gray-700">
-          Password
-        </label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          minLength={6}
-          className="mb-6 w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 outline-none focus:border-gray-900"
-        />
+        <Field label="Full name" value={name} onChange={setName} placeholder="Enter your Full Name" />
+        <Field label="Email" type="email" value={email} onChange={setEmail} placeholder="Enter your Email Address" />
+        <Field label="Password" type="password" value={password} onChange={setPassword} placeholder="Create a Password" />
+        <Field label="Confirm Password" type="password" value={confirm} onChange={setConfirm} placeholder="Re-enter your Password" />
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-lg bg-gray-900 py-2.5 font-medium text-white transition hover:bg-gray-800 disabled:opacity-50"
+          className={`btn btnPrimary ${styles.submit}`}
         >
-          {loading ? 'Creating…' : 'Create account'}
+          {loading ? 'Creating…' : 'Create an account'}
         </button>
 
-        <p className="mt-4 text-center text-sm text-gray-600">
+        <p className={styles.footer}>
           Already have an account?{' '}
-          <Link href="/login" className="font-medium text-gray-900 underline">
-            Sign in
+          <Link href="/login" className={styles.link}>
+            Login
           </Link>
         </p>
       </form>
-    </main>
+    </AuthPanel>
+  )
+}
+
+function Field({
+  label,
+  type = 'text',
+  value,
+  onChange,
+  placeholder,
+}: {
+  label: string
+  type?: string
+  value: string
+  onChange: (v: string) => void
+  placeholder?: string
+}) {
+  const id = label.toLowerCase().replace(/\s+/g, '-')
+  return (
+    <div className="field">
+      <label className="label" htmlFor={id}>
+        {label}
+      </label>
+      {type === 'password' ? (
+        <PasswordInput
+          id={id}
+          value={value}
+          onChange={onChange}
+          required
+          minLength={6}
+          placeholder={placeholder}
+        />
+      ) : (
+        <input
+          id={id}
+          type={type}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          required
+          placeholder={placeholder}
+          className="input"
+        />
+      )}
+    </div>
   )
 }

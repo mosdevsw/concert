@@ -1,0 +1,188 @@
+.page {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  background: var(--page-bg);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  padding: 40px;
+}
+
+.logoDot {
+  height: 24px;
+  width: 24px;
+  border-radius: 9999px;
+  background: var(--brand);
+}
+
+.brand {
+  font-weight: 600;
+  font-size: 24px;
+  color: var(--brand);
+}
+
+.main {
+  margin: 0 auto;
+  display: flex;
+  width: 100%;
+  max-width: 1300px;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  padding: 3.5rem 1rem;
+}
+
+.title {
+  text-align: center;
+  font-size: 48px;
+  font-weight: 600;
+  line-height: 150%;
+  color: #000000;
+}
+
+.subtitle {
+  text-align: center;
+  font-weight: 400;
+  font-size: 20px;
+  color: var(--muted);
+}
+
+.cards {
+  margin-top: 2.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 90px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-lg);
+  padding: 100px;
+}
+
+.cardUser {
+  width: 581px;
+  background: var(--surface);
+  gap: 80px;
+}
+
+.cardAdmin {
+  width: 581px;
+  background: var(--brand);
+  gap: 80px;
+  color: #ffffff;
+}
+
+.cardBody {
+  width: 381px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.icon {
+  color: var(--brand);
+}
+.cardAdmin .icon {
+  color: #ffffff;
+}
+
+.cardTitle {
+  font-size: 36px;
+  font-weight: 600;
+  color: var(--brand);
+}
+.cardAdmin .cardTitle {
+  color: #ffffff;
+}
+
+.cardDesc {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 26px;
+  color: var(--muted);
+}
+.cardAdmin .cardDesc {
+  color: #dbeafe;
+}
+
+.cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: var(--radius-bt);
+  padding: 0.75rem;
+  font-size: 24px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.ctaUser {
+  background: var(--brand);
+  color: #ffffff;
+}
+.ctaUser:hover {
+  background: var(--brand-dark);
+}
+
+.ctaAdmin {
+  background: #ffffff;
+  color: var(--brand);
+}
+.ctaAdmin:hover {
+  background: #eff6ff;
+}
+
+/* ===== Responsive: desktop-first, large → small (max-width only) ===== */
+
+/* Tablet: stack into a single centered column so cards never overflow */
+@media (max-width: 1299px) {
+  .cards {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 48px;
+  }
+}
+
+/* Phones: make the fixed-width card fluid + tighten spacing */
+@media (max-width: 639px) {
+  .header {
+    padding: 20px 24px;
+  }
+  .main {
+    padding: 2rem 1rem;
+  }
+  .title {
+    font-size: 30px;
+  }
+  .subtitle {
+    font-size: 16px;
+  }
+  .card {
+    padding: 32px 24px;
+  }
+  .cardUser,
+  .cardAdmin {
+    width: 100%;
+    max-width: 420px;
+    gap: 40px;
+  }
+  .cardBody {
+    width: 100%;
+    gap: 24px;
+  }
+  .cardTitle {
+    font-size: 28px;
+  }
+  .cta {
+    font-size: 18px;
+  }
+}

@@ -17,9 +17,9 @@ export function RouteGuard({
   useEffect(() => {
     if (!hydrated) return
     if (!user) {
-      router.replace('/login')
-    } else if (requireRole && user.role !== requireRole) {
       router.replace('/')
+    } else if (requireRole && user.role !== requireRole) {
+      router.replace(user.role === 'ADMIN' ? '/admin' : '/user')
     }
   }, [hydrated, user, requireRole, router])
 

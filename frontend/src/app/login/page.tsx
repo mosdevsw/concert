@@ -1,14 +1,19 @@
 'use client'
 
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Suspense, useState } from 'react'
+import { AuthPanel } from '@/components/AuthPanel'
+import { PasswordInput } from '@/components/PasswordInput'
 import { useAuthStore } from '@/store/auth'
+import styles from './login.module.css'
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter()
-  const login = useAuthStore((s) => s.login)
+  const params = useSearchParams()
+  const asAdmin = params.get('as') === 'admin'
 
+  const { login, logout } = useAuthStore()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -19,8 +24,18 @@ export default function LoginPage() {
     setError('')
     setLoading(true)
     try {
-      await login(email, password)
-      router.push('/')
+      const expectedRole = asAdmin ? 'ADMIN' : 'USER'
+      const user = await login(email, password)
+      if (user.role !== expectedRole) {
+        logout()
+        setError(
+          asAdmin
+            ? 'You do not have permission to access the Admin portal.'
+            : 'This is an administrator account. Please use the Administrator entry.',
+        )
+        return
+      }
+      router.replace(expectedRole === 'ADMIN' ? '/admin' : '/user')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed')
     } finally {
@@ -29,56 +44,63 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex flex-1 items-center justify-center p-4">
-      <form
-        onSubmit={onSubmit}
-        className="w-full max-w-sm rounded-2xl border border-gray-200 bg-white p-8 shadow-sm"
-      >
-        <h1 className="mb-6 text-2xl font-semibold text-gray-900">Sign in</h1>
+    <form onSubmit={onSubmit} className={styles.form}>
+      <div className={styles.title}>
+        <span>Login</span>
+      </div>
 
-        {error && (
-          <p className="mb-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">
-            {error}
-          </p>
-        )}
+      {error && <p className="formError">{error}</p>}
 
-        <label className="mb-1 block text-sm font-medium text-gray-700">
-          Email
-        </label>
+      <div className="field">
+        <label className="label">Email</label>
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="mb-4 w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 outline-none focus:border-gray-900"
+          placeholder="Enter your Email Address"
+          className="input"
         />
+      </div>
 
-        <label className="mb-1 block text-sm font-medium text-gray-700">
-          Password
-        </label>
-        <input
-          type="password"
+      <div className="field">
+        <label className="label" htmlFor="password">Password</label>
+        <PasswordInput
+          id="password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={setPassword}
           required
-          className="mb-6 w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 outline-none focus:border-gray-900"
+          placeholder="Enter your Password"
         />
+      </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-lg bg-gray-900 py-2.5 font-medium text-white transition hover:bg-gray-800 disabled:opacity-50"
+      <button
+        type="submit"
+        disabled={loading}
+        className={`btn btnPrimary ${styles.submit}`}
+      >
+        {loading ? 'Signing in…' : asAdmin ? 'Login as Administrator' : 'Login'}
+      </button>
+
+      <p className={styles.footer}>
+        Don&apos;t have an account?{' '}
+        <Link
+          href={asAdmin ? '/register?as=admin' : '/register'}
+          className={styles.link}
         >
-          {loading ? 'Signing in…' : 'Sign in'}
-        </button>
+          Create an account
+        </Link>
+      </p>
+    </form>
+  )
+}
 
-        <p className="mt-4 text-center text-sm text-gray-600">
-          No account?{' '}
-          <Link href="/register" className="font-medium text-gray-900 underline">
-            Create one
-          </Link>
-        </p>
-      </form>
-    </main>
+export default function LoginPage() {
+  return (
+    <AuthPanel>
+      <Suspense fallback={null}>
+        <LoginForm />
+      </Suspense>
+    </AuthPanel>
   )
 }

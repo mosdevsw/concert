@@ -1,95 +1,99 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { Header } from '@/components/Header'
-import { RouteGuard } from '@/components/RouteGuard'
-import { useConcertStore } from '@/store/concert'
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import styles from './page.module.css'
 
-export default function HomePage() {
+export default function SelectAccessPage() {
+  const router = useRouter()
+
   return (
-    <RouteGuard>
-      <Header view="user" />
-      <ConcertList />
-    </RouteGuard>
+    <div className={styles.page}>
+      <header className={styles.header}>
+        <span className={styles.logoDot} />
+        <span className={styles.brand}>BRAND</span>
+      </header>
+
+      <main className={styles.main}>
+        <h1 className={styles.title}>Select Access Level</h1>
+        <p className={styles.subtitle}>
+          Lorem ipsum dolor sit amet consectetur. Elit purus nam.
+        </p>
+
+        <div className={styles.cards}>
+          <AccessCard
+            variant="user"
+            title="User"
+            description="Lorem ipsum dolor sit amet consectetur. Elit purus nam gravida porttitor nibh urna sit ornare a. Proin dolor morbi id ornare aenean non"
+            cta="Enter Workspace"
+            iconSrc="/user-landing-icon.svg"
+            iconBtn="/user-arrow-forward.svg"
+            onClick={() => router.push('/login?as=user')}
+          />
+          <AccessCard
+            variant="admin"
+            title="Administrator"
+            description="Lorem ipsum dolor sit amet consectetur. Elit purus nam gravida porttitor nibh urna sit ornare a. Proin dolor morbi id ornare aenean non"
+            cta="Enter Portal"
+            iconSrc="/admin-landing-icon.svg"
+            iconBtn="/admin-arrow-forward.svg"
+            onClick={() => router.push('/login?as=admin')}
+          />
+        </div>
+      </main>
+    </div>
   )
 }
 
-function ConcertList() {
-  const { concerts, reservedIds, loading, error, fetchAll, reserve, cancel } =
-    useConcertStore()
-  const [busyId, setBusyId] = useState<string | null>(null)
-  const [actionError, setActionError] = useState('')
-
-  useEffect(() => {
-    fetchAll()
-  }, [fetchAll])
-
-  async function onAction(id: string, reserved: boolean) {
-    setBusyId(id)
-    setActionError('')
-    try {
-      await (reserved ? cancel(id) : reserve(id))
-    } catch (err) {
-      setActionError(err instanceof Error ? err.message : 'Action failed')
-    } finally {
-      setBusyId(null)
-    }
-  }
-
+function AccessCard({
+  variant,
+  title,
+  description,
+  cta,
+  iconSrc,
+  iconBtn,
+  onClick,
+}: {
+  variant: 'user' | 'admin'
+  title: string
+  description: string
+  cta: string
+  iconSrc?: string
+  iconBtn?: string
+  onClick: () => void
+}) {
+  const isAdmin = variant === 'admin'
   return (
-    <main className="mx-auto w-full max-w-4xl flex-1 p-6">
-      {actionError && (
-        <p className="mb-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">
-          {actionError}
-        </p>
-      )}
-      {error && <p className="text-red-600">{error}</p>}
-      {loading && concerts.length === 0 && (
-        <p className="text-gray-500">Loading…</p>
-      )}
+    <div
+      className={`${styles.card} ${isAdmin ? styles.cardAdmin : styles.cardUser}`}
+    >
+      <div className={styles.cardBody}>
+        <div className={styles.icon}>
+          {iconSrc ? (
+            <Image src={iconSrc} alt={title} width={90} height={90} />
+          ) : (
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 21c0-4 4-6 8-6s8 2 8 6" />
+            </svg>
+          )}
+        </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        {concerts.map((c) => {
-          const reserved = reservedIds.includes(c.id)
-          const soldOut = c.availableSeats <= 0 && !reserved
-          return (
-            <article
-              key={c.id}
-              className="flex flex-col rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
-            >
-              <h2 className="text-lg font-semibold text-gray-900">{c.name}</h2>
-              <p className="mt-1 flex-1 text-sm text-gray-600">
-                {c.description}
-              </p>
-              <p className="mt-3 text-sm text-gray-500">
-                Seats: {c.availableSeats} / {c.totalSeats}
-              </p>
-
-              <button
-                disabled={soldOut || busyId === c.id}
-                onClick={() => onAction(c.id, reserved)}
-                className={`mt-4 rounded-lg py-2 text-sm font-medium text-white transition disabled:opacity-50 ${
-                  reserved
-                    ? 'bg-red-500 hover:bg-red-600'
-                    : 'bg-gray-900 hover:bg-gray-800'
-                }`}
-              >
-                {soldOut
-                  ? 'Sold out'
-                  : busyId === c.id
-                    ? 'Please wait…'
-                    : reserved
-                      ? 'Cancel'
-                      : 'Reserve'}
-              </button>
-            </article>
-          )
-        })}
+        <h2 className={styles.cardTitle}>{title}</h2>
+        <p className={styles.cardDesc}>{description}</p>
       </div>
 
-      {!loading && concerts.length === 0 && !error && (
-        <p className="text-gray-500">No concerts available yet.</p>
-      )}
-    </main>
+      <button
+        onClick={onClick}
+        className={`${styles.cta} ${isAdmin ? styles.ctaAdmin : styles.ctaUser}`}
+      >
+        {cta}
+        {iconBtn ? (
+            <Image src={iconBtn} alt={title} width={24} height={24} />
+          ) : (
+            ' ->'
+          )}
+      </button>
+    </div>
   )
 }

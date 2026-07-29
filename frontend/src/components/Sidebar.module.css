@@ -1,0 +1,66 @@
+/* ===== Sidebar layout (custom CSS + @media breakpoints) ===== */
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 15rem;
+  flex-shrink: 0;
+  border-right: 1px solid #e5e7eb;
+  background: #ffffff;
+  padding: 1.25rem;
+}
+
+.title {
+  margin-bottom: 2rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.logout {
+  margin-top: auto;
+}
+
+/* Tablet and below: sidebar becomes a horizontal top bar */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.25rem;
+    border-right: none;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 0.5rem 1rem;
+    overflow-x: auto;
+  }
+
+  .title {
+    margin-bottom: 0;
+    margin-right: 1rem;
+    font-size: 1.25rem;
+    white-space: nowrap;
+  }
+
+  .nav {
+    flex-direction: row;
+  }
+
+  .logout {
+    margin-top: 0;
+    margin-left: auto;
+  }
+}
+
+/* Mobile: tighten spacing, hide long labels if needed */
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.1rem;
+    margin-right: 0.5rem;
+  }
+}

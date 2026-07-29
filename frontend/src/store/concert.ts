@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { apiFetch } from '@/lib/api'
+import { useToastStore } from '@/store/toast'
 
 export type Concert = {
   id: string
@@ -45,10 +46,10 @@ export const useConcertStore = create<ConcertState>((set, get) => ({
         loading: false,
       })
     } catch (err) {
-      set({
-        loading: false,
-        error: err instanceof Error ? err.message : 'Failed to load concerts',
-      })
+      const message =
+        err instanceof Error ? err.message : 'Failed to load concerts.'
+      useToastStore.getState().show(message, 'error')
+      set({ loading: false, error: message })
     }
   },
 

@@ -3,24 +3,124 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Brand palette — edit these to re-theme the whole app */
+  --brand: #0070a4;
+  --brand-dark: #005a83;
+  --accent: #1692ec;
+  --accent-dark: #3a7cc2;
+  --success: #3aa588;
+  --danger: #e0625f;
+  --danger-dark: #d24b48;
+
+  /* Neutrals */
+  --border: #5c5c5c;
+  --surface: #ffffff;
+  --muted: #6b7280;
+  --page-bg: #f9fafb;
+
+  /* Shape */
+  --radius: 4px;
+  --radius-bt: 4px;
+  --radius-lg: 10px;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-roboto);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-roboto), Arial, Helvetica, sans-serif;
+}
+
+/* ===== Shared primitives (used across multiple pages) ===== */
+
+.card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.field {
+  margin-bottom: 1rem;
+}
+
+.label {
+  display: block;
+  margin-bottom: 16px;
+  font-size: 24px;
+  font-weight: 400;
+  color: #000;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  color: #000;
+  font-weight: 400;
+  font-size: 16px;
+  font: inherit;
+  outline: none;
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: var(--brand);
+}
+
+.formError {
+  margin-bottom: 1rem;
+  border-radius: var(--radius);
+  background: #fef2f2;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  color: #dc2626;
+}
+
+.btn {
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.btnPrimary {
+  background: var(--accent);
+  color: #ffffff;
+}
+.btnPrimary:hover:not(:disabled) {
+  background: var(--accent-dark);
+}
+
+.btnBrand {
+  background: var(--brand);
+  color: #ffffff;
+}
+.btnBrand:hover:not(:disabled) {
+  background: var(--brand-dark);
+}
+
+.btnDanger {
+  background: var(--danger);
+  color: #ffffff;
+}
+.btnDanger:hover:not(:disabled) {
+  background: var(--danger-dark);
 }
