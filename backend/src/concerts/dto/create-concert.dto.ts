@@ -1,12 +1,14 @@
-import { IsInt, IsNotEmpty, IsString, Max, Min } from 'class-validator'
+import { IsInt, IsNotEmpty, IsString, Max, MaxLength, Min } from 'class-validator'
 
 export class CreateConcertDto {
   @IsString()
   @IsNotEmpty()
+  @MaxLength(30)
   name: string
 
   @IsString()
   @IsNotEmpty()
+  @MaxLength(1500)
   description: string
 
   @IsInt()

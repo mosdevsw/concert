@@ -221,6 +221,7 @@ function CreateForm() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
+            maxLength={30}
             placeholder="Please input concert name"
             className="input"
           />
@@ -247,6 +248,7 @@ function CreateForm() {
           onChange={(e) => setDescription(e.target.value)}
           required
           rows={3}
+          maxLength={1500}
           placeholder="Please input description"
           className="textarea"
         />
